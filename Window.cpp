@@ -79,7 +79,7 @@ int Window::getPadHeight(string content, int padWidth){
   int w = 0;
   int totalPadLines = 1; //for any half lines at the end of the file
   
-  for(int i = 0;i<content.length();i++){
+  for(unsigned int i = 0;i<content.length();i++){
     if(++w >= padWidth){
       w = 0;
       ++totalPadLines;
