@@ -26,6 +26,8 @@ void Window::updateWindow(string windowContent){
 
   const int padWidth = width-6;
   const int padHeight = getPadHeight(windowContent,padWidth);
+  const int startY = 4;
+  const int startX = 4;
   bool continuePad = true;
   int keyIn;
   int rows = 0;
@@ -33,32 +35,27 @@ void Window::updateWindow(string windowContent){
  
   keypad(contentPad, TRUE);
   waddstr(contentPad,windowContent.c_str());
-  //prefresh(contentPad,0,0,4,4,padHeight,padWidth); 
 
-  while(continuePad){
+  while(continuePad){ //handles scrolling
 
-    prefresh(contentPad,rows,0,4,4,4+height,4+width); 
+    prefresh(contentPad,rows,0,startY,startX,height-4,startX+width); //update pad content
     keyIn = wgetch(contentPad); //record user key press
 
     switch(keyIn) 
       { 
       case KEY_UP: 
 	{ 
-	  if (rows <= 0){
-	    continue;
-	  } //if
-	  rows--; 
-	  break; 
+	  if (rows <= 0) continue;
+	  rows--;
+	  break;
 	} //case
       case KEY_DOWN: 
 	{ 
-	  if (rows+height+1 >= padHeight){
-	    continue;
-	  } //if
-	  rows++; 
-	  break; 
+	  if(rows+height+1 >= padHeight) continue;
+	  rows++;
+	  break;
 	} //case 
-      case KEY_F(1):
+      case KEY_F(1): //only temporary. maybe? ****************
 	{
 	  continuePad = false;
 	  break;
@@ -67,8 +64,6 @@ void Window::updateWindow(string windowContent){
     wrefresh(fileWindow);
   } //while
 } //updatewindow
-
- //updateWindow
 
 /* fuction determines the total
  * number of lines in a text
@@ -79,14 +74,15 @@ int Window::getPadHeight(string content, int padWidth){
   int w = 0;
   int totalPadLines = 1; //for any half lines at the end of the file
   
-  for(unsigned int i = 0;i<content.length();i++){
-    if(++w >= padWidth){
-      w = 0;
-      ++totalPadLines;
+  for(int i = 0;i<content.length();i++){
+    if(++w >= padWidth){ //if total length is greater than the pad's width
+      w = 0; //start counting for a new line
+      totalPadLines+=2; //add a line (adds 1 to pad height)
     } //if
+    
     if(content[i] == '\n'){ //in case of new line arguments
-      w = 0;
-      ++totalPadLines; 
+      w = 0; //start new line
+      totalPadLines++; //add a line
     } //if
   } //for
     

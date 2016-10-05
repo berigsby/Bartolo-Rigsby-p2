@@ -13,7 +13,7 @@ int main(){
 
   char instructions[] = "F1: Menu";
   char title[] = "CSCI 1730 Editor!";
-  string openFileContent;
+  string openFileContent, fileName;
   int col, height, width, startInput, userMenuChoice;
   bool continueLoop = true;
 
@@ -31,7 +31,7 @@ int main(){
 
   keypad(stdscr,TRUE); //will need this for user input by keys
  
-  while(continueLoop){ 
+  while(continueLoop){  //loop until EXIT is selected
     
     startInput = getch(); //store user key press in startInput
   
@@ -47,10 +47,14 @@ int main(){
 	w.updateWindow(openFileContent);
 	break;
       case 1: //Save
-	
+	if(fh.hasOpenedFile()){ //true if a file was previously opened
+	  fh.saveFile();
+	}else{
+	  fh.saveAsFile(); //automatically call Save As if no file was opened
+	} //else
 	break;
       case 2: //Save As
-	
+	fh.saveAsFile();
 	break;
       case 3: //Exit
 	continueLoop = false; //break out of the loop and terminate program
