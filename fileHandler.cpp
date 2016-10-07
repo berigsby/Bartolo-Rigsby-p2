@@ -2,6 +2,8 @@
 #include <iostream>
 #include <iomanip>
 #include <fstream>
+#include <sstream>
+#include <cstring>
 #include <string>
 #include <locale>
 #include <sys/stat.h>
@@ -109,10 +111,15 @@ string fileHandler::openFile(){
 	
 	if(openedFile.is_open()){
 	  openSuccess = true;
-	  while(!openedFile.eof()){
+	  fstream in;
+	  in.open(fileName,ios::in);
+	  stringstream buffer;
+	  buffer << in.rdbuf();
+	  fileContent = buffer.str();
+	  /*while(!openedFile.eof()){
 	    openedFile>>fileItem; //store current string in fileItem
-	    fileContent += (fileItem+" "); //merge all strings read from file
-	  } //while
+	    fileContent += (fileItem); //merge all strings read from file
+	    } //while*/
 
 	} //if
 	else{
