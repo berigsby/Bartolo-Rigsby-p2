@@ -57,6 +57,12 @@ myFile::~myFile(){
 string myFile::getViewFile(){
   if(getDown() <= 0)
     setDown(0);
+
+  //uint moveDown = 0;
+  // if(getDown() > offsetDown){
+    //  moveDown = getDown() - offsetDown;
+    //  }//if
+
   string wholeString(wholeFile);
   string returnString = wholeString;
   for(uint x = 0; x < getDown(); x ++){
