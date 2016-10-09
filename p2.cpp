@@ -33,18 +33,18 @@ int main(){
  
   while(continueLoop){  //loop until EXIT is selected
     
-    startInput = getch(); //store user key press in startInput
+    //startInput = getch(); //store user key press in startInput
   
-    if(startInput == KEY_F(1)){
+    if(true){//startInput == KEY_F(1)){
       wm.displayWindowMenu();
       userMenuChoice = wm.getUserMenuChoice();
 
       switch(userMenuChoice){
       case 0: //Open
-	openFileContent = fh.openFile();
+	fileName = fh.openFile();
 	mvprintw(height-1,2,"%s",(fh.getFileName()).c_str()); //show open file name in bottom left corner
 	refresh();
-	w.updateWindow(openFileContent);
+	w.updateWindow(fh.getFileName());
 	break;
       case 1: //Save
 	if(fh.hasOpenedFile()){ //true if a file was previously opened

@@ -39,6 +39,7 @@ void fileHandler::saveAsFile(){ //UNFINISHED ********************
   const string saveAsInst = "Enter the file name you wish to save as: ";
   bool saveAsSuccess = false;
   WINDOW *content;
+  // char * cfilePath[100];
   
   box(fileWindow,0,0); //add border around outer window only
   wrefresh(fileWindow);
@@ -57,6 +58,8 @@ void fileHandler::saveAsFile(){ //UNFINISHED ********************
     wrefresh(content);
 	
     wgetstr(content,fileName); //store input in fileName
+    //string tmp(cfilePath);
+    //fileName =tmp;
     saveAsSuccess = true;
 
     //NOTE TO SELF: change openedFile to the file we are applying SaveAs to ****************
@@ -86,6 +89,7 @@ string fileHandler::openFile(){
   string fileItem;
   string fileContent;
   WINDOW *content;
+  //  char * cfilePath[100];
   
   box(fileWindow,0,0); //add border around outer window only
   wrefresh(fileWindow);
@@ -104,18 +108,20 @@ string fileHandler::openFile(){
     wrefresh(content);
 
     wgetstr(content,fileName); //store input in fileName
-
+    //string tmp(cfilePath);
+    //fileName =tmp;
     if(file_exists(fileName)){
 
       openedFile.open(fileName); //if file eixsts attempt to open it
 	
 	if(openedFile.is_open()){
 	  openSuccess = true;
-	  fstream in;
-	  in.open(fileName,ios::in);
-	  stringstream buffer;
-	  buffer << in.rdbuf();
-	  fileContent = buffer.str();
+	  
+	  //fstream in;
+	  //in.open(fileName,ios::in);
+	  //stringstream buffer;
+	  //buffer << in.rdbuf();
+	  //fileContent = buffer.str();
 	  /*while(!openedFile.eof()){
 	    openedFile>>fileItem; //store current string in fileItem
 	    fileContent += (fileItem); //merge all strings read from file
@@ -147,7 +153,7 @@ string fileHandler::openFile(){
   delwin(fileWindow); //delete outer window
   delwin(content); //delete inner window
   
-  return fileName; //return content of opened file
+  return fileName; //return name of opened file
 
 } //openFile
 
@@ -194,8 +200,15 @@ bool fileHandler::file_exists(const string& name) {
  * of the file that is opened
  */
 string fileHandler::getFileName(){
-  
-  return fileName;
+  string rs = "";
+  for(int x =0; x < 100; x++){
+    if(fileName[x] == '\n' || fileName[x] == ' '){
+      break;
+    }else{
+      rs += fileName[x];
+    }//else
+  }//for
+  return rs;
 } //getFileName
 
 /* function returns true if

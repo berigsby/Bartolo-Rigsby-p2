@@ -7,66 +7,69 @@
 #include <fcntl.h>
 #include "myFile.h"
 #include <iostream>
+#include "WindowMenu.h"
+#include "fileHandler.h"
 
 using namespace std;
-/*
-bool toListen(myFile file){
-  int ch;
-  ch = getch();
-  //while((ch = getch()) != KEY_F(1)){
-    switch(ch){
-	case KEY_UP:
-	  file.decDown();
-	  break;
-	case KEY_DOWN:
-	  file.incDown();
-	  break;
-        case KEY_LEFT:
-	  file.decRight();
-	  break;
-        case KEY_RIGHT:
-	  file.incRight();
-	  break;
-        case KEY_F(1):
-	  break;
-        default:
-	  file.insertChar((char)ch);
-	  return true;
-	  break;
-    }//switch
-    return false;
-    //}//while
-}//listen
 
-int mainWindow(myFile file){
-  clear();
-  WINDOW * boarderWindow;
-  WINDOW * contentWindow;
-  boarderWindow = newwin(LINES-2,COLS-2,2,2);
-  contentWindow = newwin(LINES-8,COLS-8,4,4);
-  box(boarderWindow,0,0);
-  wrefresh(boarderWindow);
-  waddstr(contentWindow,(file.getViewFile()).c_str());
-  wrefresh(contentWindow);
-  wmove(contentWindow, 0, file.getRight());
-  wrefresh(contentWindow);
-  return wgetch(contentWindow);
-}//mainWindow
-*/
-int main(){
-  myFile file = myFile("p2.cpp");
+bool menu1(myFile & file){
+  WindowMenu wm(LINES,COLS);
+  wm.displayWindowMenu();
+  int userMenuChoice = wm.getUserMenuChoice();
+  fileHandler fh(LINES,COLS);
+
+  switch(userMenuChoice){
+      case 0: //Open
+	fh.openFile();
+	mvprintw(LINES-1,2,"%s",(fh.getFileName()).c_str()); //show open file name in bottom left corner
+	refresh();
+	file.~myFile();
+	file = myFile(fh.getFileName());
+	//file.setFileAndPath(fh.getFileName());
+	break;
+      case 1: //Save
+	if(fh.hasOpenedFile()){ //true if a file was previously opened
+	  fh.saveFile();
+	}else{
+	  fh.saveAsFile(); //automatically call Save As if no file was opened
+	} //else
+	break;
+      case 2: //Save As
+	fh.saveAsFile();
+	break;
+      case 3: //Exit
+	return true; //break out of the loop and terminate program
+	break;
+      } //switch
+
+
+  return false;
+}//menu
+
+void cycle(string input){
+  //WindowMenu wm(LINES,COLS);
+  myFile file = myFile("myFile.cpp");
 
   initscr();
   cbreak();
   keypad(stdscr, TRUE);
 
+  //WINDOW * boarderWindow;
+  //boarderWindow = newwin(LINES-2,COLS-2,2,2);
+  //box(boarderWindow,0,0);
+  //wrefresh(boarderWindow);  
+  
   WINDOW * boarderWindow;
   WINDOW * contentWindow;
   boarderWindow = newwin(LINES-2,COLS-2,2,2);
   contentWindow = newwin(LINES-4,COLS-4,3,3);
   noecho();
 
-  while(true){
+  //wm.displayWindowMenu();
+  //int stuff = wm.getUserMenuChoice();
+
+  bool breakout = false;
+  while(!breakout){
 
     wclear(contentWindow);
     box(boarderWindow,0,0);
@@ -92,13 +95,21 @@ int main(){
       file.incRight();
       break;
     case KEY_F(1):
-      return 0;
+      breakout = ::menu1(file);
       break;
     default:
       file.insertChar((char)ch);
       break;
     }//switch
   }//while
+  //delwin(contentWindow);
+
   endwin();
+}//cycle
+
+int main(){
+   string file = "";
+  ::cycle(file);
+  
   return 0;
 }//main

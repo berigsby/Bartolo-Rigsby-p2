@@ -6,17 +6,17 @@
 
 using namespace std;
 typedef unsigned int uint;
-
+/*
 myFile::myFile(){
   setDown(0);
   setRight(0);
   hasFilePath = false;
 }//myFile
-
+*/
 myFile::myFile(string filePathIn){
   setDown(0);
   setRight(0);
-  hasFilePath = false;
+  hasFilePath = true;
   setFileAndPath(filePathIn);
 }//myFile
 
@@ -25,6 +25,7 @@ bool myFile::setFileAndPath(string filePathIn){
     return false;
   }//if
   hasFilePath = true;
+  //filePathIn = "myFile.cpp";
 
   filePath = new char[filePathIn.length()];
   for(uint adj = 0; adj < filePathIn.length(); ++adj){
@@ -52,10 +53,6 @@ myFile::~myFile(){
     delete[] filePath;
     delete[] wholeFile;
   }//if
-  setDown(0);
-  setRight(0);
-  hasFilePath = false;
-  
 }//destructor
 
 string myFile::getViewFile(){

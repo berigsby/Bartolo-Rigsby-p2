@@ -3,7 +3,16 @@
 #include <iomanip>
 #include "Window.h"
 #include <string>
+//#include <ncurses.h>
+//#include <cstdlib>
 #include <ncurses.h>
+//#include <string>
+#include <fstream>
+#include <sstream>
+#include <cstring>
+#include <fcntl.h>
+#include "myFile.h"
+#include <iostream>
 
 using namespace std;
 
@@ -24,6 +33,56 @@ Window::~Window(){
 
 void Window::updateWindow(string windowContent){
 
+  myFile file = myFile(windowContent);
+
+  //initscr();
+  //cbreak();
+  //keypad(stdscr, TRUE);
+
+  //WINDOW * boarderWindow;
+  WINDOW * contentWindow;
+  //boarderWindow = newwin(LINES-2,COLS-2,1,1);
+  contentWindow = newwin(LINES-4,COLS-4,2,2);
+  noecho();
+  //box(boarderWindow,0,0);
+  //wrefresh(boarderWindow);
+  while(true){
+
+    //wclear(contentWindow);
+    //box(boarderWindow,0,0);
+    //wrefresh(boarderWindow);
+    wprintw(contentWindow,(file.getViewFile()).c_str());
+    wrefresh(contentWindow);
+    wmove(contentWindow, 0, file.getRight());
+    wrefresh(contentWindow);
+
+    int ch = getch();
+
+    switch(ch){
+    case KEY_UP:
+      file.decDown();
+      break;
+    case KEY_DOWN:
+      file.incDown();
+      break;
+    case KEY_LEFT:
+      file.decRight();
+      break;
+    case KEY_RIGHT:
+      file.incRight();
+      break;
+    case KEY_F(1):
+      delwin(contentWindow);
+      return;
+      break;
+    default:
+      file.insertChar((char)ch);
+      break;
+    }//switch
+    wclear(contentWindow);
+  }//while  
+  delwin(contentWindow);
+  /*
   const int padWidth = width-6;
   const int padHeight = getPadHeight(windowContent,padWidth);
   const int startY = 4;
@@ -63,12 +122,14 @@ void Window::updateWindow(string windowContent){
       } //switch
     wrefresh(fileWindow);
   } //while
+
+*/
 } //updatewindow
 
 /* fuction determines the total
  * number of lines in a text
  * file
- */
+ *
 int Window::getPadHeight(string content, int padWidth){
 
   int w = 0;
@@ -88,3 +149,4 @@ int Window::getPadHeight(string content, int padWidth){
     
   return totalPadLines;
 } //getPadHeigt
+*/
