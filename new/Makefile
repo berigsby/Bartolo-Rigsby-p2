@@ -1,8 +1,8 @@
 
-compile: p2
+compile: 1730ed
 
-run: p2
-	./p2
+run: 1730ed
+	./1730ed
 
 p2.o: p2.cpp
 	g++ -Wall -std=c++14 -c -lncurses -g -O0 -pedantic-errors myFile.cpp
@@ -10,10 +10,10 @@ p2.o: p2.cpp
 	g++ -Wall -std=c++14 -c -lncurses -g -O0 -pedantic-errors WindowMenu.cpp 
 	g++ -Wall -std=c++14 -c -lncurses -g -O0 -pedantic-errors fileHandler.cpp
 
-p2: p2.o
-	g++ -Wall -lncurses -g -o p2 p2.o myFile.o WindowMenu.o fileHandler.o
+1730ed: p2.o
+	g++ -Wall -lncurses -g -o 1730ed p2.o myFile.o WindowMenu.o fileHandler.o
 
 clean: 
-	rm -f p2
+	rm -f 1730ed
 	rm -f *.o
 	rm -f *~

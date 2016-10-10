@@ -85,7 +85,7 @@ string fileHandler::saveAsFile(){ //UNFINISHED ********************
  * to open file and return its 
  * path back to it caller
  */
-void fileHandler::openFile(){
+void fileHandler::openFile(string input){
  
   const string openInst = "Enter the file name you wish to open: ";
   string fileItem;
@@ -95,7 +95,7 @@ void fileHandler::openFile(){
   
   box(fileWindow,0,0); //add border around outer window only
   wrefresh(fileWindow);
-
+  openSuccess = false;
   while(!(openSuccess)){ //while no file is successfully opened
 
     content = derwin(fileWindow, 5, 24, 2, 2); //create a sub window inside main window
@@ -109,7 +109,14 @@ void fileHandler::openFile(){
     touchwin(fileWindow); //throw away all optimization information
     wrefresh(content);
 
-    wgetstr(content,fileName); //store input in fileName
+    if(input != ""){
+      for(uint x = 0; x < 99; x++){
+    fileName[x] = input[x];
+    }//for
+    input = "";
+    }else{
+      wgetstr(content,fileName); //store input in fileName
+    }//else
     //string tmp(cfilePath);
     //fileName =tmp;
     if(file_exists(fileName)){

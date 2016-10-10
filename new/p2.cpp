@@ -12,12 +12,12 @@
 
 using namespace std;
 
-bool menu1(myFile & file){
+bool menu1(myFile & file, fileHandler & fh){
   WindowMenu wm(LINES,COLS);
   wm.displayWindowMenu();
   int userMenuChoice = wm.getUserMenuChoice();
   
-  fileHandler fh(LINES,COLS);
+  //fileHandler fh(LINES,COLS);
   string fn;
 
   char instructions[] = "F1: Menu";
@@ -26,7 +26,7 @@ bool menu1(myFile & file){
   switch(userMenuChoice){
       case 0: //Open
 
-	fh.openFile();
+	fh.openFile("");
 	clear();
 	mvprintw(LINES-1,2,"%s",(fh.getFileName()).c_str()); //show open file name in bottom left corner
 	mvprintw(0,2,"%s",instructions); //keep visible at top left corner
@@ -61,13 +61,14 @@ bool menu1(myFile & file){
 
 void cycle(string input){
   myFile file;
+  //fileHandler fh(LINES,COLS);
   bool firstfirst = true;
-  if(input != ""){
-    firstfirst = false;
-    file = myFile(input);
-  }//if
+  //if(input != ""){
+  //  firstfirst = false;
+  //  fh.openFile(input);
+  //  file.deMyFile(input);
+  //}//if
   //myFile file;// = myFile("myFile.cpp");
-
   initscr();
   cbreak();
   keypad(stdscr, TRUE);
@@ -83,8 +84,18 @@ void cycle(string input){
   char title[] = "CSCI 1730 Editor!";
   mvprintw(0,2,"%s",instructions); //keep visible at top left corner
   mvprintw(0,(COLS-strlen(title))/2,"%s",title);
+  mvprintw(LINES-1,2,"%s",input.c_str()); //show open file name in bottom left corner
   refresh();
 
+  box(boarderWindow,0,0);
+  wrefresh(boarderWindow);
+
+  fileHandler fh(LINES,COLS);
+  if(input != ""){
+    firstfirst = false;
+    fh.openFile(input);
+    file.deMyFile(fh.getFileName());
+  }//if
 
   bool breakout = false;
   bool first = true;
@@ -128,7 +139,7 @@ void cycle(string input){
       file.incRight();
       break;
     case KEY_F(1):
-      breakout = ::menu1(file);
+      breakout = ::menu1(file,fh);
       break;
     default:
       file.insertChar((char)ch);

@@ -18,7 +18,7 @@ class fileHandler {
   ~fileHandler();
   void saveFile();
   string saveAsFile();
-  void openFile();
+  void openFile(string input);
   void displayErrorWindow(string theErrorMessage);
   bool file_exists(const string& name);
   string getFileName();
