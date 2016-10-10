@@ -8,6 +8,7 @@
 #include "myFile.h"
 #include <iostream>
 #include "WindowMenu.h"
+#include "fileHandler.h"
 
 using namespace std;
 
@@ -15,17 +16,31 @@ bool menu1(myFile & file){
   WindowMenu wm(LINES,COLS);
   wm.displayWindowMenu();
   int userMenuChoice = wm.getUserMenuChoice();
+  
+  fileHandler fh(LINES,COLS);
+  string fn;
 
+  char instructions[] = "F1: Menu";
+  char title[] = "CSCI 1730 Editor!";
+ 
   switch(userMenuChoice){
       case 0: //Open
-	file.deMyFile("p2.cpp");
-	//file = myFile("p2.cpp");
+
+	fh.openFile();
+	clear();
+	mvprintw(LINES-1,2,"%s",(fh.getFileName()).c_str()); //show open file name in bottom left corner
+	mvprintw(0,2,"%s",instructions); //keep visible at top left corner
+	mvprintw(0,(COLS-strlen(title))/2,"%s",title);
+	refresh();
+	noecho();
+	file.deMyFile(fh.getFileName());
+	//w.updateWindow(fh.getFileName());
 	break;
       case 1: //Save
-
+	file.saveAs();
 	break;
       case 2: //Save As
-	file.saveAs("test.txt");
+	file.saveAs(fh.saveAsFile());
 	break;
       case 3: //Exit
 	return true; //break out of the loop and terminate program
@@ -37,18 +52,29 @@ bool menu1(myFile & file){
 }//menu
 
 void cycle(string input){
-
-  myFile file = myFile("myFile.cpp");
+  myFile file;
+  bool firstfirst = true;
+  if(input != ""){
+    firstfirst = false;
+    file = myFile(input);
+  }//if
+  //myFile file;// = myFile("myFile.cpp");
 
   initscr();
   cbreak();
   keypad(stdscr, TRUE);
-  refresh();
   WINDOW * boarderWindow;
   WINDOW * contentWindow;
-  boarderWindow = newwin(LINES-2,COLS-2,2,2);
-  contentWindow = newwin(LINES-4,COLS-4,3,3);
+  boarderWindow = newwin(LINES-2,COLS-2,1,1);
+  contentWindow = newwin(LINES-4,COLS-4,2,2);
   noecho();
+
+  char instructions[] = "F1: Menu";
+  char title[] = "CSCI 1730 Editor!";
+  mvprintw(0,2,"%s",instructions); //keep visible at top left corner
+  mvprintw(0,(COLS-strlen(title))/2,"%s",title);
+  refresh();
+
 
   bool breakout = false;
   bool first = true;
@@ -60,16 +86,21 @@ void cycle(string input){
     wprintw(contentWindow,(file.getViewFile()).c_str());
     wrefresh(contentWindow);
     int vertm = (file.getDown() - (file.numGreatestDown - LINES+5));
+
     wmove(contentWindow, vertm, file.getRight());
     wrefresh(contentWindow);
 
     int ch;
-    if(first){
+    if(firstfirst){
+      ch = KEY_F(1);
+      firstfirst = false;
+    }else if(first){
       ch = KEY_UP;
       first = false;
     }else {
       ch = getch();
     }
+   
     switch(ch){
     case KEY_UP:
       file.decDown();
@@ -95,9 +126,13 @@ void cycle(string input){
   endwin();
 }//cycle
 
-int main(){
+int main(int argc, char * argv[]){
    string file = "";
-  ::cycle(file);
-  
-  return 0;
+   if(argc == 2){
+     string file2(argv[1]);
+     ::cycle(file2);
+   }else{
+     ::cycle(file);
+   }//else
+   return 0;
 }//main

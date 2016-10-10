@@ -82,6 +82,8 @@ void myFile::deMyFile(string filePathIn){
 }//deMyFile
 
 string myFile::getViewFile(){
+  if(!hasFilePath)
+    return "";
   if(getDown() <= 0)
     setDown(0);
 
@@ -226,3 +228,11 @@ void myFile::saveAs(string name){
   out << input;
   out.close();
 }//SaveAs
+
+void myFile::saveAs(){
+  string input(wholeFile);
+  //std::cin >> input;
+  std::ofstream out(filePath);
+  out << input;
+  out.close();
+}//SaveA

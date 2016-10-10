@@ -34,13 +34,14 @@ void fileHandler::saveFile(){
    */
 } //saveFile
 
-void fileHandler::saveAsFile(){ //UNFINISHED ********************
+string fileHandler::saveAsFile(){ //UNFINISHED ********************
 
   const string saveAsInst = "Enter the file name you wish to save as: ";
   bool saveAsSuccess = false;
   WINDOW *content;
   // char * cfilePath[100];
-  
+  string savePath = ""; //return the file path(the name of the file) that you want to save as ************
+
   box(fileWindow,0,0); //add border around outer window only
   wrefresh(fileWindow);
 
@@ -75,7 +76,8 @@ void fileHandler::saveAsFile(){ //UNFINISHED ********************
 
   delwin(content);
   delwin(fileWindow);
-
+  
+  return savePath;
 } //saveAsFile
 
 /* function opens new window asking
@@ -83,7 +85,7 @@ void fileHandler::saveAsFile(){ //UNFINISHED ********************
  * to open file and return its 
  * path back to it caller
  */
-string fileHandler::openFile(){
+void fileHandler::openFile(){
  
   const string openInst = "Enter the file name you wish to open: ";
   string fileItem;
@@ -152,8 +154,13 @@ string fileHandler::openFile(){
 
   delwin(fileWindow); //delete outer window
   delwin(content); //delete inner window
+
+  string rs = "";
+  for(unsigned int x = 0; x <= strlen(fileName); ++x){
+    rs += fileName[x];
+  }//for
   
-  return fileName; //return name of opened file
+  return; //return name of opened file
 
 } //openFile
 

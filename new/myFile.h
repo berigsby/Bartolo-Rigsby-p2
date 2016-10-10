@@ -18,10 +18,11 @@ class myFile{
   char * wholeFile;
   uint numDown;
   uint numRight;
-  char * filePath;
+  //char * filePath;
   uint totalDown;
   uint wholeFileLength;
  public:
+  char * filePath;
   uint numGreatestDown;
 
   myFile();
@@ -46,6 +47,7 @@ class myFile{
   uint getRight();
  
   void saveAs(string name);
+  void saveAs();
 };//myFile
 
 #endif
