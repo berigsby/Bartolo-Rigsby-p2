@@ -43,7 +43,7 @@ void cycle(string input){
   initscr();
   cbreak();
   keypad(stdscr, TRUE);
-  refresh();
+  
   WINDOW * boarderWindow;
   WINDOW * contentWindow;
   boarderWindow = newwin(LINES-2,COLS-2,2,2);
@@ -51,7 +51,6 @@ void cycle(string input){
   noecho();
 
   bool breakout = false;
-  bool first = true;
   while(!breakout){
     curs_set(1);
     wclear(contentWindow);
@@ -63,13 +62,8 @@ void cycle(string input){
     wmove(contentWindow, vertm, file.getRight());
     wrefresh(contentWindow);
 
-    int ch;
-    if(first){
-      ch = KEY_UP;
-      first = false;
-    }else {
-      ch = getch();
-    }
+    int ch = getch();
+
     switch(ch){
     case KEY_UP:
       file.decDown();

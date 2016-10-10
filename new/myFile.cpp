@@ -218,3 +218,11 @@ void myFile::setRight(int right){
 uint myFile::getRight(){
   return numRight;
 }//getRight
+
+void myFile::saveAs(string name){
+  string input(wholeFile);
+  //std::cin >> input;
+  std::ofstream out(name);
+  out << input;
+  out.close();
+}//SaveAs

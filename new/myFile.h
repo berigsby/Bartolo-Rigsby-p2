@@ -44,7 +44,8 @@ class myFile{
   void decRight();
   void setRight(int right);
   uint getRight();
-  
+ 
+  void saveAs(string name);
 };//myFile
 
 #endif
