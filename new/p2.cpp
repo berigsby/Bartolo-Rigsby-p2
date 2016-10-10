@@ -22,30 +22,38 @@ bool menu1(myFile & file, fileHandler & fh){
 
   char instructions[] = "F1: Menu";
   char title[] = "CSCI 1730 Editor!";
- 
+  noecho();//
   switch(userMenuChoice){
       case 0: //Open
 
 	fh.openFile("");
+	if(!file.isSaved()){
+	  if(fh.wouldYouLikeToSave()){
+	    file.saveAs();
+	  }//if
+	}//if
 	clear();
 	mvprintw(LINES-1,2,"%s",(fh.getFileName()).c_str()); //show open file name in bottom left corner
 	mvprintw(0,2,"%s",instructions); //keep visible at top left corner
 	mvprintw(0,(COLS-strlen(title))/2,"%s",title);
 	refresh();
 	noecho();
-	if(!file.isSaved()){
-	  if(fh.wouldYouLikeToSave()){
-	    file.saveAs();
-	  }//if
-	}//if
+	//if(!file.isSaved()){
+	//  if(fh.wouldYouLikeToSave()){
+	//    file.saveAs();
+	//  }//if
+	//}//if
 	file.deMyFile(fh.getFileName());
 	//w.updateWindow(fh.getFileName());
 	break;
       case 1: //Save
 	file.saveAs();
+	noecho();
 	break;
       case 2: //Save As
-	file.saveAs(fh.saveAsFile());
+	//file.saveAs(fh.saveAsFile());
+	fh.saveAsFile(file.getWholeFile(),file.wholeFileLength);
+	noecho();
 	break;
       case 3: //Exit
 	if(!file.isSaved()){
@@ -89,7 +97,7 @@ void cycle(string input){
 
   box(boarderWindow,0,0);
   wrefresh(boarderWindow);
-
+  noecho();//
   fileHandler fh(LINES,COLS);
   if(input != ""){
     firstfirst = false;
@@ -113,6 +121,7 @@ void cycle(string input){
 
     wmove(contentWindow, vertm, file.getRight());
     wrefresh(contentWindow);
+    noecho();//
 
     int ch;
     if(firstfirst){

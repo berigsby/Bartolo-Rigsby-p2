@@ -18,12 +18,12 @@ class myFile{
   char * wholeFile;
   uint numDown;
   uint numRight;
-  //char * filePath;
   uint totalDown;
-  uint wholeFileLength;
+  // uint wholeFileLength;
   bool justSaved;
   char * filePath;
  public:
+  uint wholeFileLength;
   uint numGreatestDown;
 
   myFile();
@@ -36,8 +36,9 @@ class myFile{
   string getViewFile();
   bool setFileAndPath(string filePathIn);
   void insertChar(char character);
-  string getFilePath();
+  char * getFilePath();
   string getLineNums();
+  char * getWholeFile();
 
   void incDown();
   void decDown();
