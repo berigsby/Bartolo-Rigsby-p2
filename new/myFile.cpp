@@ -13,6 +13,7 @@ myFile::myFile(){
   totalDown = 0;
   wholeFileLength = 0;
   hasFilePath = false;
+  justSaved = true;
 }//myFile
 
 myFile::myFile(string filePathIn){
@@ -21,6 +22,7 @@ myFile::myFile(string filePathIn){
   totalDown = 0;
   wholeFileLength = 0;
   hasFilePath = false;
+  justSaved = true;
   setFileAndPath(filePathIn);
 }//myFile
 
@@ -78,6 +80,7 @@ void myFile::deMyFile(string filePathIn){
   setRight(0);
   wholeFileLength = 0;
   hasFilePath = false;
+  justSaved = true;
   setFileAndPath(filePathIn);
 }//deMyFile
 
@@ -119,7 +122,25 @@ string myFile::getViewFile(){
   return returnString;
 }//getViewFile
 
+string myFile::getLineNums(){
+  string nums = "";
+  if(!hasFilePath)
+    return nums;
+  int numLines = LINES - 5;
+  int startLines = numGreatestDown - numLines;
+  if(startLines < 1)
+    startLines = 1;
+  for(uint x = startLines; x <= numGreatestDown+1; x++){
+    nums += std::to_string(x);
+    //if((x + 1) == numGreatestDown)
+    //  break;
+    nums += '\n';
+  }//for
+  return nums;
+}//getLineNums
+
 void myFile::insertChar(char character){
+  justSaved = false;
   uint offset = 0;
   int lastbackn = 0;
   if(getDown() <= 0)
@@ -185,6 +206,10 @@ void myFile::insertChar(char character){
   }//else
 }//insertChar
 
+string myFile::getFilePath(){
+  return filePath;
+}//getFilePath
+
 void myFile::incDown(){
   numDown++;
 }//incDown
@@ -222,6 +247,7 @@ uint myFile::getRight(){
 }//getRight
 
 void myFile::saveAs(string name){
+  justSaved = true;
   string input(wholeFile);
   //std::cin >> input;
   std::ofstream out(name);
@@ -230,9 +256,14 @@ void myFile::saveAs(string name){
 }//SaveAs
 
 void myFile::saveAs(){
+  justSaved = true;
   string input(wholeFile);
   //std::cin >> input;
   std::ofstream out(filePath);
   out << input;
   out.close();
 }//SaveA
+
+bool myFile::isSaved(){
+  return justSaved;
+}//isSaved

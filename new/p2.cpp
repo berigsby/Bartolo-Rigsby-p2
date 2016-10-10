@@ -33,6 +33,11 @@ bool menu1(myFile & file){
 	mvprintw(0,(COLS-strlen(title))/2,"%s",title);
 	refresh();
 	noecho();
+	if(!file.isSaved()){
+	  if(fh.wouldYouLikeToSave()){
+	    file.saveAs();
+	  }//if
+	}//if
 	file.deMyFile(fh.getFileName());
 	//w.updateWindow(fh.getFileName());
 	break;
@@ -43,11 +48,14 @@ bool menu1(myFile & file){
 	file.saveAs(fh.saveAsFile());
 	break;
       case 3: //Exit
+	if(!file.isSaved()){
+	  if(fh.wouldYouLikeToSave()){
+	    file.saveAs();
+	  }//if
+	}//if
 	return true; //break out of the loop and terminate program
 	break;
       } //switch
-
-
   return false;
 }//menu
 
@@ -65,8 +73,10 @@ void cycle(string input){
   keypad(stdscr, TRUE);
   WINDOW * boarderWindow;
   WINDOW * contentWindow;
+  WINDOW * numPadWindow;
   boarderWindow = newwin(LINES-2,COLS-2,1,1);
-  contentWindow = newwin(LINES-4,COLS-4,2,2);
+  contentWindow = newwin(LINES-4,COLS-8,2,6);
+  numPadWindow = newwin(LINES-4,4,2,2);
   noecho();
 
   char instructions[] = "F1: Menu";
@@ -81,10 +91,13 @@ void cycle(string input){
   while(!breakout){
     curs_set(1);
     wclear(contentWindow);
+    wclear(numPadWindow);
     box(boarderWindow,0,0);
     wrefresh(boarderWindow);
     wprintw(contentWindow,(file.getViewFile()).c_str());
     wrefresh(contentWindow);
+    wprintw(numPadWindow, (file.getLineNums()).c_str());
+    wrefresh(numPadWindow);
     int vertm = (file.getDown() - (file.numGreatestDown - LINES+5));
 
     wmove(contentWindow, vertm, file.getRight());

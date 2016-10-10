@@ -23,6 +23,7 @@ class fileHandler {
   bool file_exists(const string& name);
   string getFileName();
   bool hasOpenedFile();
+  bool wouldYouLikeToSave();
 
  private:
   WINDOW *fileWindow;

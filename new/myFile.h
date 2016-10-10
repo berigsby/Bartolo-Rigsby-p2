@@ -21,8 +21,9 @@ class myFile{
   //char * filePath;
   uint totalDown;
   uint wholeFileLength;
- public:
+  bool justSaved;
   char * filePath;
+ public:
   uint numGreatestDown;
 
   myFile();
@@ -35,6 +36,8 @@ class myFile{
   string getViewFile();
   bool setFileAndPath(string filePathIn);
   void insertChar(char character);
+  string getFilePath();
+  string getLineNums();
 
   void incDown();
   void decDown();
@@ -48,6 +51,7 @@ class myFile{
  
   void saveAs(string name);
   void saveAs();
+  bool isSaved();
 };//myFile
 
 #endif

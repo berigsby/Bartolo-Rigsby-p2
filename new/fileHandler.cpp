@@ -164,6 +164,10 @@ void fileHandler::openFile(){
 
 } //openFile
 
+bool fileHandler::wouldYouLikeToSave(){
+  return false;
+}//wouldYouLikeToSave
+
 /* function displays the passed error
  * message in a new window
  */
