@@ -8,7 +8,6 @@
 #include "myFile.h"
 #include <iostream>
 #include "WindowMenu.h"
-#include "fileHandler.h"
 
 using namespace std;
 
@@ -16,26 +15,17 @@ bool menu1(myFile & file){
   WindowMenu wm(LINES,COLS);
   wm.displayWindowMenu();
   int userMenuChoice = wm.getUserMenuChoice();
-  fileHandler fh(LINES,COLS);
 
   switch(userMenuChoice){
       case 0: //Open
-	fh.openFile();
-	mvprintw(LINES-1,2,"%s",(fh.getFileName()).c_str()); //show open file name in bottom left corner
-	refresh();
-	file.~myFile();
-	file = myFile(fh.getFileName());
-	//file.setFileAndPath(fh.getFileName());
+	file.deMyFile("p2.cpp");
+	//file = myFile("p2.cpp");
 	break;
       case 1: //Save
-	if(fh.hasOpenedFile()){ //true if a file was previously opened
-	  fh.saveFile();
-	}else{
-	  fh.saveAsFile(); //automatically call Save As if no file was opened
-	} //else
+
 	break;
       case 2: //Save As
-	fh.saveAsFile();
+
 	break;
       case 3: //Exit
 	return true; //break out of the loop and terminate program
@@ -47,17 +37,12 @@ bool menu1(myFile & file){
 }//menu
 
 void cycle(string input){
-  //WindowMenu wm(LINES,COLS);
+
   myFile file = myFile("myFile.cpp");
 
   initscr();
   cbreak();
   keypad(stdscr, TRUE);
-
-  //WINDOW * boarderWindow;
-  //boarderWindow = newwin(LINES-2,COLS-2,2,2);
-  //box(boarderWindow,0,0);
-  //wrefresh(boarderWindow);  
   
   WINDOW * boarderWindow;
   WINDOW * contentWindow;
@@ -65,18 +50,16 @@ void cycle(string input){
   contentWindow = newwin(LINES-4,COLS-4,3,3);
   noecho();
 
-  //wm.displayWindowMenu();
-  //int stuff = wm.getUserMenuChoice();
-
   bool breakout = false;
   while(!breakout){
-
+    curs_set(1);
     wclear(contentWindow);
     box(boarderWindow,0,0);
     wrefresh(boarderWindow);
     wprintw(contentWindow,(file.getViewFile()).c_str());
     wrefresh(contentWindow);
-    wmove(contentWindow, 0, file.getRight());
+    int vertm = (file.getDown() - (file.numGreatestDown - LINES+5));
+    wmove(contentWindow, vertm, file.getRight());
     wrefresh(contentWindow);
 
     int ch = getch();
@@ -102,7 +85,6 @@ void cycle(string input){
       break;
     }//switch
   }//while
-  //delwin(contentWindow);
 
   endwin();
 }//cycle

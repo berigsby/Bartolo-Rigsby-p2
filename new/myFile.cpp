@@ -1,8 +1,8 @@
-
 #include <fstream>
 #include <sstream>
 #include <cstring>
 #include "myFile.h"
+#include <ncurses.h>
 
 using namespace std;
 typedef unsigned int uint;
@@ -10,12 +10,16 @@ typedef unsigned int uint;
 myFile::myFile(){
   setDown(0);
   setRight(0);
+  totalDown = 0;
+  wholeFileLength = 0;
   hasFilePath = false;
 }//myFile
 
 myFile::myFile(string filePathIn){
   setDown(0);
   setRight(0);
+  totalDown = 0;
+  wholeFileLength = 0;
   hasFilePath = false;
   setFileAndPath(filePathIn);
 }//myFile
@@ -26,7 +30,7 @@ bool myFile::setFileAndPath(string filePathIn){
   }//if
   hasFilePath = true;
 
-  filePath = new char[filePathIn.length()];
+  filePath = new char[filePathIn.length()-1];
   for(uint adj = 0; adj < filePathIn.length(); ++adj){
     *(filePath+adj) = filePathIn[adj];
   }//for
@@ -37,9 +41,14 @@ bool myFile::setFileAndPath(string filePathIn){
   string test = buffer.str();
 
   wholeFile = new char[test.length()];
-  for(uint adj = 0; adj < test.length(); ++adj){
+  wholeFileLength = test.length();
+  for(uint adj = 0; adj < test.length()-1; ++adj){
     *(wholeFile+adj) = test[adj];
+    if(test[adj] == '\n')
+      totalDown++;
   }//for
+  wholeFile[wholeFileLength-1] = '\0';
+  numGreatestDown = LINES-4;
   return true;
 }//setFilePath
 
@@ -52,30 +61,59 @@ myFile::~myFile(){
     delete[] filePath;
     delete[] wholeFile;
   }//if
+  totalDown = 0;
   setDown(0);
   setRight(0);
-  hasFilePath = false;
-  
+  wholeFileLength = 0;
+  hasFilePath = false;  
 }//destructor
+
+void myFile::deMyFile(string filePathIn){
+  if(hasFilePath){
+    delete[] filePath;
+    delete[] wholeFile;
+  }//if
+  totalDown = 0;
+  setDown(0);
+  setRight(0);
+  wholeFileLength = 0;
+  hasFilePath = false;
+  setFileAndPath(filePathIn);
+}//deMyFile
 
 string myFile::getViewFile(){
   if(getDown() <= 0)
     setDown(0);
 
-  //uint moveDown = 0;
-  // if(getDown() > offsetDown){
-    //  moveDown = getDown() - offsetDown;
-    //  }//if
+  if(getDown() >= totalDown){
+    setDown(totalDown);
+  }//if
+
+  int numLines = LINES - 5;
+
+  if (getDown() > numGreatestDown){
+    numGreatestDown = getDown();
+  } else if (getDown() < (numGreatestDown - numLines)){
+    numGreatestDown = getDown() + numLines;
+  }//else
 
   string wholeString(wholeFile);
   string returnString = wholeString;
-  for(uint x = 0; x < getDown(); x ++){
+  string testingString = wholeString;
+  for(uint x = 0; x < (numGreatestDown - numLines); x ++){
     returnString = returnString.substr(returnString.find_first_of('\n')+ 1);
-    
   }//for
-  if((returnString.find_first_of('\n')) <= getRight()){
-    setRight(returnString.find_first_of('\n'));
-  }//if
+
+  for(uint x = 0; x < getDown(); x ++){
+    testingString = testingString.substr(testingString.find_first_of('\n')+ 1);
+  }//for  
+  if((testingString.find_first_of('\n')) <= getRight()){
+    setRight(testingString.find_first_of('\n'));
+  }
+  if((testingString.find_first_of('\n')) == string::npos){
+    if(testingString.length() <= getRight())
+      setRight(testingString.length());
+  }//else
   return returnString;
 }//getViewFile
 
@@ -94,7 +132,6 @@ void myFile::insertChar(char character){
 
   if((returnString.find_first_of('\n')) <= getRight()){
     offset += returnString.find_first_of('\n');
-    //setRight(0);
   } else{
     offset += getRight();
   }//else
@@ -102,43 +139,47 @@ void myFile::insertChar(char character){
   if(character == '\b'){
     if(offset == 0)
       return;
-    for (uint x = offset; x < wholeString.length(); x++){
+    wholeFileLength--;
+    for (uint x = offset; x < wholeFileLength; x++){
       wholeFile[x-1] = wholeFile[x];
     }//for
-    wholeFile[wholeString.length()-1] = '\0';
+    wholeFile[wholeFileLength-1] = '\0';
     if(getRight() == 0){
+      totalDown--;
       decDown();
       setRight(lastbackn);
     }else{
       decRight();
     }//else
-  }else if(character == 127){
+  }else if(false){
     for (uint x = offset; x < wholeString.length(); x++){
       wholeFile[x] = wholeFile[x+1];
     }//for
     wholeFile[wholeString.length()-1] = '\0';
     //decRight();
   }else {
-    char * newWholeFile = new char[wholeString.length()+1];
+    wholeFileLength ++;
+    char * newWholeFile = new char[wholeFileLength];
+    //char newWholeFile[wholeFileLength];
     for(uint adj = 0; adj < offset; ++adj){
       newWholeFile[adj] = wholeFile[adj];
     }//for 
     newWholeFile[offset] = character;
-    for(uint adj = offset+1; adj < wholeString.length()+1; ++adj){
+    for(uint adj = offset+1; adj < wholeFileLength-1; ++adj){
       newWholeFile[adj] = wholeFile[adj-1];
     }//for 
+    newWholeFile[wholeFileLength-1] = '\0';
     delete[] wholeFile;
-    wholeFile = new char[wholeString.length()+1];
+    //wholeFile = new char[wholeFileLength];
     wholeFile = newWholeFile;
+    //delete[] newWholeFile;
     if(character =='\n'){
       incDown();
       setRight(0);
+      totalDown++;
     } else{
       incRight();
     }//else
-    //delete[] newWholeFile;
-    //(wholeFile+offset) = (wholeFile+offset+1);
-    //wholeFile[offset] = character;
   }//else
 }//insertChar
 

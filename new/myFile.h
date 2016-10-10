@@ -19,11 +19,16 @@ class myFile{
   uint numDown;
   uint numRight;
   char * filePath;
+  uint totalDown;
+  uint wholeFileLength;
  public:
+  uint numGreatestDown;
+
   myFile();
   myFile(string filePathIn);
   ~myFile();
 
+  void deMyFile(string filePathIn);
   bool checkPath(string filePathIn);
 
   string getViewFile();
