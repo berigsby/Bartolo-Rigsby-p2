@@ -17,16 +17,18 @@ class fileHandler {
   fileHandler(int theHeight, int theWidth);
   ~fileHandler();
   void saveFile();
-  void saveAsFile();
-  string openFile();
+  void saveAsFile(char * stuffToSave, unsigned int stuffToSaveLength);
+  void openFile(string input);
   void displayErrorWindow(string theErrorMessage);
   bool file_exists(const string& name);
   string getFileName();
   bool hasOpenedFile();
+  bool wouldYouLikeToSave();
+  bool overWrite();
 
  private:
   WINDOW *fileWindow;
-  char fileName[50];
+  char fileName[100];
   ifstream openedFile;
   int height;
   int width;

@@ -1,21 +1,19 @@
-output: p2.o Window.o WindowMenu.o fileHandler.o myFile.o
-	g++ -Wall -lncurses -std=c++14 -g -O0 -pedantic-errors p2.o Window.o WindowMenu.o fileHandler.o myFile.o -o output
+
+compile: 1730ed
+
+run: 1730ed
+	./1730ed
 
 p2.o: p2.cpp
-	g++ -Wall -lncurses -std=c++14 -g -O0 -pedantic-errors -c p2.cpp
+	g++ -Wall -std=c++14 -c -lncurses -g -O0 -pedantic-errors myFile.cpp
+	g++ -Wall -std=c++14 -c -lncurses -g -O0 -pedantic-errors p2.cpp
+	g++ -Wall -std=c++14 -c -lncurses -g -O0 -pedantic-errors WindowMenu.cpp 
+	g++ -Wall -std=c++14 -c -lncurses -g -O0 -pedantic-errors fileHandler.cpp
 
-Window.o: Window.cpp Window.h
-	g++ -Wall -lncurses -std=c++14 -g -O0 -pedantic-errors -c Window.cpp
+1730ed: p2.o
+	g++ -Wall -lncurses -g -o 1730ed p2.o myFile.o WindowMenu.o fileHandler.o
 
-WindowMenu.o: WindowMenu.cpp WindowMenu.h
-	g++ -Wall -lncurses -std=c++14 -g -O0 -pedantic-errors -c WindowMenu.cpp
-
-fileHandler.o: fileHandler.cpp fileHandler.h
-	g++ -Wall -lncurses -std=c++14 -g -O0 -pedantic-errors -c fileHandler.cpp
-
-myFile.o: myFile.cpp myFile.h
-	g++ -Wall -lncurses -std=c++14 -g -O0 -pedantic-errors -c myFile.cpp
-
-clean:
-	rm *.o output
-	rm -rf *~
+clean: 
+	rm -f 1730ed
+	rm -f *.o
+	rm -f *~

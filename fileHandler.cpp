@@ -10,6 +10,8 @@
 #include <unistd.h>
 #include "fileHandler.h"
 #include <cerrno>
+#include <string>
+#include <fcntl.h>
 
 using namespace std;
 
@@ -34,10 +36,13 @@ void fileHandler::saveFile(){
    */
 } //saveFile
 
-void fileHandler::saveAsFile(){ //UNFINISHED ********************
-
-  const string saveAsInst = "Enter the file name you wish to save as: ";
+void fileHandler::saveAsFile(char * stuffToSave, uint stuffToSaveLength){ //UNFINISHED ********************
+  
+  string saveAsInst = "Enter the file name you wish to save as: ";
   bool saveAsSuccess = false;
+  char saveFileName[50];
+  fstream f;
+  int fd; //file descriptor
   WINDOW *content;
   
   box(fileWindow,0,0); //add border around outer window only
@@ -47,31 +52,62 @@ void fileHandler::saveAsFile(){ //UNFINISHED ********************
 
     content = derwin(fileWindow, 5, 24, 2, 2); //create a sub window inside main window
     waddstr(content, saveAsInst.c_str()); //add instructions to inner window
-
+    
     curs_set(1); //show cursor
+    
     wmove(content,3,5); //move cursor below prompt
     echo(); //show typed input
     keypad(content,TRUE); //enable keyboard input to inner window
-       
     touchwin(fileWindow); //throw away all optimization information
     wrefresh(content);
 	
-    wgetstr(content,fileName); //store input in fileName
-    saveAsSuccess = true;
+    wgetstr(content,saveFileName); //store input in saveFileName
+    
+    werase(content); //erase inner window
+    wrefresh(content);
 
-    //NOTE TO SELF: change openedFile to the file we are applying SaveAs to ****************
-    //in order to be able to update the file again using just Save
-
+    
+    if(file_exists(saveFileName)){
+      if(overWrite()){
+	fd = open(saveFileName, O_TRUNC); //opens file and erases its content
+	close(fd);
+	open(saveFileName,O_RDWR);
+	if (fd < 0) {
+	  close(fd);
+	  werase(content); //erase inner window
+	  wrefresh(content);
+	  displayErrorWindow("Error opening file or no permission to write");
+	} //if open fails
+	else{ //if opens succeeds
+	  write(fd, stuffToSave, stuffToSaveLength); //write to specified saveAs file
+	  //strcpy(fileName, saveFileName); //store new open file as the saveAs file name
+	  saveAsSuccess = true; //to break out of SaveAs window loop
+	} //else
+      } //if
+    } //if file exists
+    else{ 
+      fd = open(saveFileName, O_RDWR | O_CREAT,0777); //create new file thats is readable and writable
+      if (fd < 0) {
+	close(fd);
+	werase(content); //erase inner window
+	wrefresh(content);
+	displayErrorWindow("Error opening file or no permission to write");
+      } //if open fails
+      else{ //if opens succeeds
+	write(fd, stuffToSave, stuffToSaveLength); //write to specified saveAs file
+	strcpy(fileName, saveFileName); //store new open file as the saveAs file name
+	saveAsSuccess = true; //to break out of SaveAs window loop
+      } //else
+    } //else if file does not exist
   } //while
   
-  werase(content);
+  werase(content); //get rid of saveAs prompt
   werase(fileWindow);
   
   wrefresh(content);
   wrefresh(fileWindow);
 
   delwin(content);
-  delwin(fileWindow);
 
 } //saveAsFile
 
@@ -80,16 +116,17 @@ void fileHandler::saveAsFile(){ //UNFINISHED ********************
  * to open file and return its 
  * path back to it caller
  */
-string fileHandler::openFile(){
+void fileHandler::openFile(string input){
  
   const string openInst = "Enter the file name you wish to open: ";
   string fileItem;
   string fileContent;
   WINDOW *content;
+  //  char * cfilePath[100];
   
   box(fileWindow,0,0); //add border around outer window only
   wrefresh(fileWindow);
-
+  openSuccess = false;
   while(!(openSuccess)){ //while no file is successfully opened
 
     content = derwin(fileWindow, 5, 24, 2, 2); //create a sub window inside main window
@@ -103,24 +140,22 @@ string fileHandler::openFile(){
     touchwin(fileWindow); //throw away all optimization information
     wrefresh(content);
 
-    wgetstr(content,fileName); //store input in fileName
-
+    if(input != ""){
+      for(uint x = 0; x < 99; x++){
+    fileName[x] = input[x];
+    }//for
+    input = "";
+    }else{
+      wgetstr(content,fileName); //store input in fileName
+    }//else
+    //string tmp(cfilePath);
+    //fileName =tmp;
     if(file_exists(fileName)){
 
       openedFile.open(fileName); //if file eixsts attempt to open it
 	
 	if(openedFile.is_open()){
 	  openSuccess = true;
-	  fstream in;
-	  in.open(fileName,ios::in);
-	  stringstream buffer;
-	  buffer << in.rdbuf();
-	  fileContent = buffer.str();
-	  /*while(!openedFile.eof()){
-	    openedFile>>fileItem; //store current string in fileItem
-	    fileContent += (fileItem); //merge all strings read from file
-	    } //while*/
-
 	} //if
 	else{
 	  fileName[0] = '\0';
@@ -146,10 +181,81 @@ string fileHandler::openFile(){
 
   delwin(fileWindow); //delete outer window
   delwin(content); //delete inner window
+
+  string rs = "";
+  for(unsigned int x = 0; x <= strlen(fileName); ++x){
+    rs += fileName[x];
+  }//for
   
-  return fileName; //return content of opened file
+  return; //return name of opened file
 
 } //openFile
+
+
+bool fileHandler::overWrite(){
+  
+   WINDOW *overWriteContent;
+   string overWriteMessage = "File already exists. Overwrite? y/n ";
+   char userAnswer[10]; //where the y or n will be stored
+   string answer;
+
+   overWriteContent = derwin(fileWindow, 2, 25, 2,1); //create a sub window
+
+   curs_set(1); //show cursor
+   echo();
+   keypad(overWriteContent,TRUE); //enable keyboard input to inner window
+
+   while(!(answer == "y" || answer == "n")){
+     wclear(overWriteContent);
+     mvwaddstr(overWriteContent,0,0,overWriteMessage.c_str());
+     wmove(overWriteContent, 5,6);
+     wgetstr(overWriteContent,userAnswer);
+     answer = userAnswer;
+   } //while
+
+   werase(overWriteContent);
+   wrefresh(overWriteContent);
+   delwin(overWriteContent);
+
+   return (answer == "y"); //returns true or false
+} //overWrite
+
+
+bool fileHandler::wouldYouLikeToSave(){
+  
+   WINDOW *overWriteContent;
+   string overWriteMessage = "Would you like to save\nthis file first? y/n ";
+   char userAnswer[10]; //where the y or n will be stored
+   string answer;
+   //WINDOW *boarderWindow2; 
+
+   //boarderWindow2 = newwin(LINES-2,COLS-2,1,1);
+
+   //box(boarderWindow2,0,0);
+   //wrefresh(boarderWindow2);
+   box(fileWindow,0,0); //add border around outer window only
+   wrefresh(fileWindow);
+
+   overWriteContent = derwin(fileWindow, 2, 25, 2,1); //create a sub window
+
+   curs_set(1); //show cursor
+   echo();
+   keypad(overWriteContent,TRUE); //enable keyboard input to inner window
+
+   while(!(answer == "y" || answer == "n")){
+     wclear(overWriteContent);
+     mvwaddstr(overWriteContent,0,0,overWriteMessage.c_str());
+     wmove(overWriteContent, 5,6);
+     wgetstr(overWriteContent,userAnswer);
+     answer = userAnswer;
+   } //while
+
+   werase(overWriteContent);
+   wrefresh(overWriteContent);
+   delwin(overWriteContent);
+
+   return (answer == "y"); //returns true or false
+}//wouldYouLikeToSave
 
 /* function displays the passed error
  * message in a new window
@@ -194,8 +300,15 @@ bool fileHandler::file_exists(const string& name) {
  * of the file that is opened
  */
 string fileHandler::getFileName(){
-  
-  return fileName;
+  string rs = "";
+  for(int x =0; x < 100; x++){
+    if(fileName[x] == '\n' || fileName[x] == ' '){
+      break;
+    }else{
+      rs += fileName[x];
+    }//else
+  }//for
+  return rs;
 } //getFileName
 
 /* function returns true if
