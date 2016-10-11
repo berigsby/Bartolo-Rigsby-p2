@@ -1,0 +1,23 @@
+# Project 02
+
+Timothy Bartolo (811-847-393)
+Benjamin Rigsby (811-180-250)
+
+## Instructions
+
+To clean my code(remove any compiled files), type:
+$ make clean
+
+To compile my code, type:
+$ make compile
+
+To run my code(after compiling it), type the corresponding
+file you want to run:
+$ ./1730ed
+OR
+$ ./1730ed [fileName]
+
+where [fileName] is a file to open
+
+## Reflection
+
