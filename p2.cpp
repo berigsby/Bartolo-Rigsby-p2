@@ -52,6 +52,7 @@ bool menu1(myFile & file, fileHandler & fh){
 	break;
       case 2: //Save As
 	fh.saveAsFile(file.getWholeFile(),file.wholeFileLength);
+	file.deMyFile(fh.getFileName());
 	noecho();
 	break;
       case 3: //Exit
