@@ -20,4 +20,18 @@ $ ./1730ed [fileName]
 where [fileName] is a file to open
 
 ## Reflection
+This project seemed daunting at first. The labs building up
+to it didn't go too well, so we were scared at first. Trying to
+created out own TUI seemed almost impossible. However, after putting
+out code together, and then entirely reworking how our files were
+stored, we created a program were quiet proud of. I really enjoyed
+the various testing to input characters into char arrays and creating
+certain cases to test for different things. We also got a fair bit
+of experience creating our own classes seperately, then coming togther
+and using them to make something that actually works. The various cases
+checking for file creation and saving was a bit tricky, but we got it
+working in the end.
 
+A couple things to note is that we did add line numbers and color
+for the extra credit section. Also, if no file is specified when calling
+the function, we automatically ask for a file first thing in the program.
