@@ -25,6 +25,9 @@ bool menu1(myFile & file, fileHandler & fh){
   char instructions[] = "F1: Menu";
   char title[] = "CSCI 1730 Editor!";
   noecho();
+
+  attron(COLOR_PAIR(1));
+ 
   switch(userMenuChoice){
       case 0: //Open
 
@@ -77,6 +80,9 @@ void cycle(string input){
   cbreak();
   keypad(stdscr, TRUE);
 
+  start_color();
+  init_pair(1, COLOR_BLACK,COLOR_RED);
+
   WINDOW * boarderWindow;//the box around outside
   WINDOW * contentWindow;//the working area
   WINDOW * numPadWindow;//the numbers of left
@@ -87,6 +93,7 @@ void cycle(string input){
 
   char instructions[] = "F1: Menu";
   char title[] = "CSCI 1730 Editor!";
+  attron(COLOR_PAIR(1));
   mvprintw(0,2,"%s",instructions); //keep visible at top left corner
   mvprintw(0,(COLS-strlen(title))/2,"%s",title);//show title in top middle
   mvprintw(LINES-1,2,"%s",input.c_str()); //show open file name in bottom left corner

@@ -12,7 +12,7 @@ WindowMenu::WindowMenu(int height, int width){
 } //WindowMenu
 
 void WindowMenu::displayWindowMenu(){
-
+  wattron(menuWindow,COLOR_PAIR(1));
   box(menuWindow,0,0);
   int j = 0;
   userMenuChoice = 0;
