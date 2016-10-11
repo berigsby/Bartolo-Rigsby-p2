@@ -12,13 +12,13 @@
 
 using namespace std;
 
-bool menu1(myFile & file, fileHandler & fh){
+bool menu1(myFile & file, fileHandler & fh, bool & firstfirst){
 
   //display menu choices
   WindowMenu wm(LINES,COLS);
-  wm.displayWindowMenu();
+  //wm.displayWindowMenu();
 
-  int userMenuChoice = wm.getUserMenuChoice();
+  int userMenuChoice = 0 ;// = wm.getUserMenuChoice();
 
   string fn;
 
@@ -27,7 +27,16 @@ bool menu1(myFile & file, fileHandler & fh){
   noecho();
 
   attron(COLOR_PAIR(1));
- 
+
+  //if first time, auto ask for file name
+  if(firstfirst){
+    userMenuChoice = 0;
+    firstfirst = false;
+  }else{
+    wm.displayWindowMenu();
+    userMenuChoice = wm.getUserMenuChoice();
+  }//else
+
   switch(userMenuChoice){
       case 0: //Open
 
@@ -146,7 +155,7 @@ void cycle(string input){
     //if no file specified, open menu by default
     if(firstfirst){
       ch = KEY_F(1);
-      firstfirst = false;
+      //firstfirst = false;
     }else if(first){
       ch = KEY_UP;
       first = false;
@@ -168,7 +177,7 @@ void cycle(string input){
       file.incRight();
       break;
     case KEY_F(1):
-      breakout = ::menu1(file,fh);
+      breakout = ::menu1(file,fh,firstfirst);
       break;
     default:
       //none of the others, insert the char of the button clicked
