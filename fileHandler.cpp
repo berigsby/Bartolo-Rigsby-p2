@@ -22,21 +22,8 @@ fileHandler::fileHandler(int theHeight, int theWidth){
   fileWindow = newwin(8, 30, (height-10)/2, (width-25)/2); //create a new window in center of screen
 
 } //fileHandler
-
-fileHandler::~fileHandler(){
-
-} //fileHandler deconstructor
-
-void fileHandler::saveFile(){
-  /*TO IMPLEMENT
-   * store content in pad to array
-   * and in turn read that conrent
-   * from array and store to opened
-   * file
-   */
-} //saveFile
-
-void fileHandler::saveAsFile(char * stuffToSave, uint stuffToSaveLength){ //UNFINISHED ********************
+ 
+void fileHandler::saveAsFile(char * stuffToSave, uint stuffToSaveLength){
   
   string saveAsInst = "Enter the file name you wish to save as: ";
   bool saveAsSuccess = false;
@@ -111,11 +98,6 @@ void fileHandler::saveAsFile(char * stuffToSave, uint stuffToSaveLength){ //UNFI
 
 } //saveAsFile
 
-/* function opens new window asking
- * user for file name and attempts
- * to open file and return its 
- * path back to it caller
- */
 void fileHandler::openFile(string input){
  
   const string openInst = "Enter the file name you wish to open: ";
@@ -148,8 +130,7 @@ void fileHandler::openFile(string input){
     }else{
       wgetstr(content,fileName); //store input in fileName
     }//else
-    //string tmp(cfilePath);
-    //fileName =tmp;
+
     if(file_exists(fileName)){
 
       openedFile.open(fileName); //if file eixsts attempt to open it
@@ -191,11 +172,10 @@ void fileHandler::openFile(string input){
 
 } //openFile
 
-
 bool fileHandler::overWrite(){
   
    WINDOW *overWriteContent;
-   string overWriteMessage = "File already exists. Overwrite? y/n ";
+   string overWriteMessage = "File already exists. Overwrite? y/n \n  ";
    char userAnswer[10]; //where the y or n will be stored
    string answer;
 
@@ -220,19 +200,13 @@ bool fileHandler::overWrite(){
    return (answer == "y"); //returns true or false
 } //overWrite
 
-
 bool fileHandler::wouldYouLikeToSave(){
   
    WINDOW *overWriteContent;
-   string overWriteMessage = "Would you like to save\nthis file first? y/n ";
+   string overWriteMessage = "Would you like to save\nthis file first? y/n \n  ";
    char userAnswer[10]; //where the y or n will be stored
    string answer;
-   //WINDOW *boarderWindow2; 
 
-   //boarderWindow2 = newwin(LINES-2,COLS-2,1,1);
-
-   //box(boarderWindow2,0,0);
-   //wrefresh(boarderWindow2);
    box(fileWindow,0,0); //add border around outer window only
    wrefresh(fileWindow);
 
@@ -257,9 +231,6 @@ bool fileHandler::wouldYouLikeToSave(){
    return (answer == "y"); //returns true or false
 }//wouldYouLikeToSave
 
-/* function displays the passed error
- * message in a new window
- */
 void fileHandler::displayErrorWindow(string theErrorMessage){
   
   string errorMessage = theErrorMessage+" Press <ENTER> to go back";
@@ -286,19 +257,12 @@ void fileHandler::displayErrorWindow(string theErrorMessage){
 
 } //displayErrorWindow
 
-/* function checks to see if file
- * exists. returns true if file
- * exists
- */
 bool fileHandler::file_exists(const string& name) {
   
   ifstream f(name.c_str());
   return f.good();
 }
 
-/* function returns the name
- * of the file that is opened
- */
 string fileHandler::getFileName(){
   string rs = "";
   for(int x =0; x < 100; x++){
@@ -311,10 +275,6 @@ string fileHandler::getFileName(){
   return rs;
 } //getFileName
 
-/* function returns true if
- * a file is currently open
- * and false otherwise
- */
 bool fileHandler::hasOpenedFile(){
   
   return openSuccess;

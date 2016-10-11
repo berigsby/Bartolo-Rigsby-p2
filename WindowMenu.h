@@ -6,9 +6,25 @@
 class WindowMenu {
 
  public:
+
+  /**
+   * Constructor of the WindowMenu
+   *
+   * @param height the height of ncurses
+   * @param width the width of ncurses
+   */
   WindowMenu(int height, int width);
-  ~WindowMenu();
+
+  /**
+   * Displays the Window choice menu for when F1 is clicked
+   */
   void displayWindowMenu();
+
+  /**
+   * Gets the user choic
+   *
+   * @return int 0 for open, 1 for save, 2 for saveAs, 3 for exit
+   */
   int getUserMenuChoice();
 
  private:

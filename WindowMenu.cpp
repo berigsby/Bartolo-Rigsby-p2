@@ -1,6 +1,5 @@
 #include <iostream>
 #include <iomanip>
-//#include "Window.h"
 #include "WindowMenu.h"
 #include <string>
 
@@ -11,10 +10,6 @@ WindowMenu::WindowMenu(int height, int width){
   menuWindow = newwin(6, 12, (height-10)/2, (width-25)/2); //create a new window in center of screen
 
 } //WindowMenu
-
-WindowMenu::~WindowMenu(){
-
-} //WindowMenu deconstructor
 
 void WindowMenu::displayWindowMenu(){
 
