@@ -201,6 +201,17 @@ void myFile::insertChar(char character){
       decRight();
     }//else
   }else {
+    //dont add content if string is going to overflow
+    if(returnString.find_first_of('\n') >= (uint)COLS-9){
+      if(returnString.length() < (uint)COLS-9){
+	//donothing
+      }//if
+      else{
+	if(character != '\n')
+	  return;
+      }//else
+    }//if
+
     //all other cases, insert a char
     wholeFileLength ++;
     char * newWholeFile = new char[wholeFileLength];
